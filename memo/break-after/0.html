@@ -1,0 +1,39 @@
+<style>
+.page {break-after:all;}
+</style>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+function getNowPage() {
+    const pages = document.querySelectorAll(`.page`);
+    for (let page of pages) {
+        if ('none'!==page.style.display) {
+            return page;
+        }
+    }
+}
+function nextPage() {
+    const now = getNowPage();
+    console.log('now:', now)
+    const next = now.nextElementSibling ?? document.querySelector(`.page`);
+    console.log('next:', next)
+    console.log('all:', document.querySelector(`.page`), [...document.querySelectorAll(`.page`)])
+    now.style.display = 'none';
+    next.style.display = 'block';
+    return next;
+}
+document.querySelector(`#next`).addEventListener('click', (event) => {nextPage();});
+});
+</script>
+<main>
+<button id="next">次</button>
+<div style="column-count:2;">
+<div class="page" style="display:block;"><p>最初のページ。</p></div>
+<div class="page" style="display:none;"><p>次のページ。</p></div>
+<div class="page" style="display:none;"><p>第三のページ。</p></div>
+</div>
+</main>
+
+
+
+
+

@@ -1,0 +1,67 @@
+<style>
+.container {
+  column-count: 3;
+  column-gap: 20px; /* カラム間の間隔 */
+}
+
+.column {
+  display: inline-block; /* インライン要素の特性を無効化 */
+  width: 100%; /* 幅を100%に設定 */
+  box-sizing: border-box; /* パディングとボーダーを幅に含める */
+  margin-bottom: 10px; /* 必要に応じて調整 */
+  padding: 10px; /* 必要に応じて調整 */
+}
+
+.column p {
+  margin: 0; /* 段落のデフォルトマージンをリセット */
+}
+</style>
+<div class="container">
+  <div class="column">
+    <p>コンテンツ1</p>
+  </div>
+  <div class="column">
+    <p>コンテンツ2</p>
+  </div>
+  <div class="column">
+    <p>コンテンツ3</p>
+  </div>
+</div>
+
+
+
+
+
+
+<style>
+.book{column-count:2; column-gap: 1em; display: inline-block; width: 100%; box-sizing: border-box; column-fill: auto; }
+/*p{margin:0;}*/
+p {margin-bottom: 1em; letter-spacing:0.05em; line-height:1.5em;}
+p:first-child {margin-top: 0;margin-bottom: 1em;}
+p:last-child {margin-bottom: 0;}
+</style>
+<main class="book">
+    <div data-page="1">
+        <p>　あ１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０</p>
+        <p>　い１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０</p>
+    </div>
+    <div data-page="2">
+        <p>　う１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０</p>
+        <p>　え１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０</p>
+    </div>
+</main>
+
+<book><!--本-->
+    <cover></cover><!--表紙-->
+    <band></band><!--帯-->
+    <intro></intro><!--まえがき、はじめに-->
+    <toc></toc><!--目次-->
+    <face></face><!--見開き、本扉、中扉-->
+    <page></page><!--本文ページ-->
+    <page></page>
+    <outro></outro><!--あとがき、おわりに-->
+    <idx></idx><!--索引-->
+    <appendix></appendix><!--付録-->
+    <cover></cover><!--裏表紙-->
+</book>
+

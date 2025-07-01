@@ -1,0 +1,229 @@
+<meta charset="utf-8">
+<script src="../util/test.js"></script>
+<script src="../util/type.js"></script>
+<script src="text-block.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', async(event)=>{
+    const test = new Test()
+    test.run([
+        // gets()
+        ()=>{ // 空文字
+            const actual = TextBlock.fromString('')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            //return Type.isArray(actual) && 0 === actual.length
+            return null === actual
+        },
+        ()=>{ // 一行のみ
+            const actual = TextBlock.fromString('一行のみ')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 1 === actual.length && '一行のみ'===actual[0]
+        },
+        ()=>{ // 二段一行ずつ
+            const actual = TextBlock.fromString('一段目\n\n二段目')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) &&
+                    2 === actual.length &&
+                    '一段目'===actual[0] && 
+                    '二段目'===actual[1]
+        },
+        ()=>{ // 二段二行ずつ
+            const actual = TextBlock.fromString('一段一行\n一段二行\n\n二段一行\n二段二行')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) &&
+                    2 === actual.length &&
+                    '一段一行\n一段二行'===actual[0] && 
+                    '二段一行\n二段二行'===actual[1]
+        },
+        ()=>{ // 改行のみ(\n)
+            const actual = TextBlock.fromString('\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            //return Type.isStrings(actual) && 1 === actual.length && ''===actual[0]
+            //return Type.isArray(actual) && 0 === actual.length
+            return null === actual
+        },
+        ()=>{ // 改行のみ(バッククォート文字列)
+            const actual = TextBlock.fromString(`
+`)
+            console.log(actual)
+            //return Type.isStrings(actual) && 1 === actual.length && ''===actual[0]
+            //return Type.isArray(actual) && 0 === actual.length
+            return null === actual
+        },
+        ()=>{ // 改行エスケープのみ(\\n)
+            const actual = TextBlock.fromString('\\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 1 === actual.length && ''===actual[0]
+            //return Type.isStrings(actual) && 1 === actual.length && '\n' === actual[0]
+        },
+        ()=>{ // 改行のみ(\n) 2
+            const actual = TextBlock.fromString('\n\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            //return Type.isArray(actual) && 0 === actual.length
+            return null === actual
+        },
+        ()=>{ // 改行のみ(バッククォート文字列) 2
+            const actual = TextBlock.fromString(`
+
+`)
+            console.log(actual)
+            //return Type.isArray(actual) && 0 === actual.length
+            return null === actual
+        },
+        ()=>{ // 改行エスケープのみ(\\n) 2
+            const actual = TextBlock.fromString('\\n\\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 1 === actual.length && '\n' === actual[0]
+        },
+        ()=>{ // 前後に改行あってもトリムされる
+            const actual = TextBlock.fromString('\n前後に改行あってもトリムされる\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 1 === actual.length && '前後に改行あってもトリムされる' === actual[0]
+        },
+        ()=>{ // 前後に複数の連続した改行あってもトリムされる
+            const actual = TextBlock.fromString('\n\n前後に複数の連続した改行あってもトリムされる\n\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 1 === actual.length && '前後に複数の連続した改行あってもトリムされる' === actual[0]
+        },
+        ()=>{ // テキスト間に２つより多くの改行が連続していてもひとつのテキストブロックの区切りになる
+            const actual = TextBlock.fromString('テキスト間に２つより多くの改行が連続していても\n\n\nひとつのテキストブロックの区切りになる 3')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 2 === actual.length && 
+                'テキスト間に２つより多くの改行が連続していても' === actual[0] &&
+                'ひとつのテキストブロックの区切りになる 3' === actual[1]
+        },
+        ()=>{ // テキスト間に２つより多くの改行が連続していてもひとつのテキストブロックの区切りになる
+            const actual = TextBlock.fromString('テキスト間に２つより多くの改行が連続していても\n\n\n\nひとつのテキストブロックの区切りになる 4')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 2 === actual.length && 
+                'テキスト間に２つより多くの改行が連続していても' === actual[0] &&
+                'ひとつのテキストブロックの区切りになる 4' === actual[1]
+        },
+        ()=>{ // テキスト間に２つより多くの改行が連続していてもひとつのテキストブロックの区切りになる
+            const actual = TextBlock.fromString('テキスト間に２つより多くの改行が連続していても\n\n\n\n\nひとつのテキストブロックの区切りになる 5')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 2 === actual.length && 
+                'テキスト間に２つより多くの改行が連続していても' === actual[0] &&
+                'ひとつのテキストブロックの区切りになる 5' === actual[1]
+        },
+        ()=>{ // テキスト間に２つより多くの改行が連続していてもひとつのテキストブロックの区切りになる
+            const actual = TextBlock.fromString('テキスト間に２つより多くの改行が連続していても\n\n\n\n\n\nひとつのテキストブロックの区切りになる 6')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 2 === actual.length && 
+                'テキスト間に２つより多くの改行が連続していても' === actual[0] &&
+                'ひとつのテキストブロックの区切りになる 6' === actual[1]
+        },
+        ()=>{ // 改行エスケープ＋改行
+            const actual = TextBlock.fromString('\\n\n\\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 1 === actual.length && '\n' === actual[0]
+        },
+        ()=>{ // 改行エスケープ＋改行２（段）
+            const actual = TextBlock.fromString('\\n\n\n\\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 2 === actual.length && 
+                '' === actual[0] &&
+                '' === actual[1]
+        },
+        ()=>{ // 改行エスケープ＋改行３（段）
+            const actual = TextBlock.fromString('\\n\n\n\n\\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 2 === actual.length && 
+                '' === actual[0] &&
+                '' === actual[1]
+        },
+        ()=>{ // 複数改行エスケープ２＋改行３（段）
+            const actual = TextBlock.fromString('\\n\\n\n\n\n\\n\\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 2 === actual.length && 
+                '\n' === actual[0] &&
+                '\n' === actual[1]
+        },
+        ()=>{ // 複数改行エスケープ３＋改行４（段）
+            const actual = TextBlock.fromString('\\n\\n\\n\n\n\n\n\\n\\n\\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 2 === actual.length && 
+                '\n\n' === actual[0] &&
+                '\n\n' === actual[1]
+        },
+        ()=>{ // 先頭と末尾に改行エスケープ
+            const actual = TextBlock.fromString('\\n先頭と末尾に改行エスケープ\\n')
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 1 === actual.length && 
+                '\n先頭と末尾に改行エスケープ\n' === actual[0]
+        },
+        /*
+        // fromUrl()
+        async()=>{ // ファイル読込
+            const lex = await TextBlock.fromUrl('./test.txt')
+            const actual = lex.gets()
+            console.log(actual)
+            console.log(TextBlock.Ranges)
+            return Type.isStrings(actual) && 14 === actual.length && 
+                'TextBlock（テキストブロック）について。' === actual[0]
+        },
+        */
+
+    ]);
+    const expecteds = [
+        'TextBlock（テキストブロック）について。',
+        'テキストをブロックに分けます。\n改行コード１つの直後に続くテキストは同一ブロック内です。',
+        '改行コード２つ以上の直後に続くテキストは次の別ブロックです。',
+        'これは４ブロック目です。\nブロック間にたくさん改行があっても空ブロックができたりはしません。',
+        'ブロック内で改行表示したいときは改行エスケープします１。\n\nこんなふうにね。',
+        'ブロック内で改行表示したいときは改行エスケープします２。\n\nこんなふうにね。',
+        '改行エスケープだけの行は特例としてエスケープした数だけ表示します。\n\nこんなふうにね。\nこれにより台本と出力結果で見た目の行数が一致してわかりやすくなります。',
+        '改行エスケープは連続できます。\n\n\n\nこんなふうにね。',
+        '改行エスケープ行は連続しても有効です。\n\n\n\n\nほらね。',
+        `改行エスケープのエスケープはバックスラッシュをひとつ多くつける。
+\\nのようにね。\\nのように途中や末尾でも可\\n`,
+        /*
+        `残念ながら改行エスケープをエスケープすることはできない。
+\\nのようにバックスラッシュをひとつ多くつけたときにそうしたいのだが、
+正規表現で改行コードに置換するとき、それを表現する方法がわからない。
+escape(), unescape()関数を使ってもうまくいかなかった。
+その関数は非推奨らしい。
+自力実装するのもどうかと思う。
+要件としてレアケースのため実装しないのが良さそうか。`,
+        */
+    ]
+    console.log(TextBlock.fromString('あああ'))
+    console.log(TextBlock.fromStringIter('いいい'))
+    console.log(await TextBlock.fromUrl('./test.txt'))
+    console.log(await TextBlock.fromUrlIter('./test.txt', true))
+    for (let [block, i] of TextBlock.fromStringIter('あああ\n\nいいい', true)) {
+        console.log(i, block)
+        //console.assert(block===expecteds[i])
+    }
+    //for await (let [block, i] of TextBlock.fromUrlIter(new URL('./test.txt'), true)) {
+    for await (let [block, i] of TextBlock.fromUrlIter('./test.txt', true)) {
+        console.log(i, block, expecteds[i])
+        console.assert(block===expecteds[i])
+    }
+})
+</script>
+
+<h1></h1>
+<header></header>
+<main></main>
+<footer></footer>
+

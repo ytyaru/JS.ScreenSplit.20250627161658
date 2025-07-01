@@ -1,0 +1,13 @@
+<script>
+window.addEventListener('DOMContentLoaded', async(event) => {
+function test1() { new Promise((resolve, reject)=>resolve('解決')).then(text=>console.log(text)) }
+test1()
+function test2() { return new Promise((resolve, reject)=>resolve('解決2')) }
+test2().then(text=>console.log(text))
+
+const res = await test2()
+console.assert('解決2'===res)
+//console.log(res)
+//res.then(text=>console.log(text)) // TypeError: res.then is not a function
+})
+</script>
